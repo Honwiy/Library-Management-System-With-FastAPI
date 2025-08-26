@@ -1,0 +1,5 @@
+# venv config
+.venv/
+
+# py cache
+__pycache__/
