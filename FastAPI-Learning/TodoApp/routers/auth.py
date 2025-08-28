@@ -1,7 +1,7 @@
-from datetime import timedelta, datetime, timezone
+from datetime import timedelta, datetime, timezoneHTTPException
 from fastapi import APIRouter, Depends, status, HTTPException
 from pydantic import BaseModel
-from models import Users
+from models import User
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from database import SessionLocal
@@ -49,7 +49,7 @@ oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/login')
 
 
 def authenticate_user(username: str, password: str, db: Session):
-    user = db.query(Users).filter(Users.username == username).first()
+    user = db.query(User).filter(User.username == username).first()
     if user and bcrypt_context.verify(password, user.hashed_password):
         return user
     return None 
@@ -77,7 +77,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_user(db: db_dependency, create_user_request: CreateUserRequest):
 
-  create_user_request = Users(
+  create_user_request = User(
     email=create_user_request.email,
     username=create_user_request.username,
     first_name=create_user_request.first_name,
